@@ -59,14 +59,14 @@ insert INTO text values (5566, 'CN', 'PHI', 'TENENBAUM');
 insert INTO text values ('3388', 'MP', 'TATA', 'BREY');
 select * from text;
 
-insert INTO BOOK_ADOPTION values (11, 3, 7722);
-insert INTO BOOK_ADOPTION values (22, 4, 7722);
-insert INTO BOOK_ADOPTION values (11, 5, 4400);
-insert INTO BOOK_ADOPTION values (11, 8, 5566);
-insert INTO BOOK_ADOPTION values (55, 4, 3388);
-insert INTO BOOK_ADOPTION values (44, 4, 5566);
-insert INTO BOOK_ADOPTION values (44, 7, 3388);
-select * from BOOK_Adoption;
+insert INTO ADOPTION values (11, 3, 7722);
+insert INTO ADOPTION values (22, 4, 7722);
+insert INTO ADOPTION values (11, 5, 4400);
+insert INTO ADOPTION values (11, 8, 5566);
+insert INTO ADOPTION values (55, 4, 3388);
+insert INTO ADOPTION values (44, 4, 5566);
+insert INTO ADOPTION values (44, 7, 3388);
+select * from Adoption;
 
 
 insert INTO enroll values ('1DB01IS01', 22, 5, 76);
