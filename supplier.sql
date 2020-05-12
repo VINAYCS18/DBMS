@@ -59,9 +59,9 @@ WHERE P.color = 'Red' )
 			
 
 select pname from parts where pid in(
-select pid from cataloge where sid =(
+select pid from catalog where sid =(
 select sid from suppliers where sname = 'Acme widget')
-minus select pid from cataloge where sid in (select sid from suppliers
+minus select pid from catalog where sid in (select sid from suppliers
 where sname <>'Acme widget'));
 
 
