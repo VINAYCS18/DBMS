@@ -1,99 +1,42 @@
-create table student
-(
- snum int(10),
- sname varchar2(20),
- major varchar2(20),
- lvl varchar2(3),
- age int(2),
- primary key(snum)
+
+create table student(
+snum int,
+sname varchar(20),
+major varchar(20),
+lvl varchar(20),
+age int,
+primary key(snum)
 );
 
-create table faculty
-(
- fid int(10),
- fname varchar2(20),
- deptid int(1),
- primary key(fid)
-); 
-
-create table class
-(
- cname varchar2(5),
- meets_at timestamp,
- room int(3),
- fid int(10)
- primary key(cname),
- foreign key(fid) references faculty(fid)
+create table class(
+cname varchar(20),
+meet_at time,
+room varchar(20),
+fid int,
+primary key(cname),
+foreign key(fid) references faculty(fid)
+);
+drop table enrolled;
+create table enrolled(
+snum int,
+cname varchar(20),
+primary key(snum,cname),
+foreign key(snum) references student(snum),
+foreign key(cname) references class(cname)
 );
 
-create table enrolled
-(
- snum int(10),
- cname varchar2(5),
- primary key(snum),
- foreign key(snum) references student(snum),
- foreign key(cname) references class(cname)
+create table faculty(
+fid int,
+fname varchar(20),
+deptid int,
+primary key(fid)
 );
-
-insert into student values(1,'Rahul','cse','sr',20);
-insert into student values(2,'Lohith','ise','jr',19);
-insert into student values(3,'keerthan','ete','jr',19);
-insert into student values(4,'patil','cse','sr',20);
-insert into student values(5,'priyanka','ise','sr',20);
-insert into student values(6,'hemanth','cse','sr',20);
-insert into student values(7,'yamini','ise','jr',19);
-insert into student values(8,'sneha','ete','jr',19);
-insert into student values(9,'saranya','cse','sr',20);
-insert into student values(10,'anil','ise','sr',20);
-
-insert into faculty values(10,'prof. Murthy',10);
-insert into faculty values(20,'prof. Sudha',20);
-insert into faculty values(30,'prof. Latha',30);
-
-insert into class values('4A','2011-10-20 09:50:00',301,10);
-insert into class values('4B','2013-11-02 10:45:30',302,20);
-insert into class values('4C','2014-11-22 11:15:02',303,10);
-insert into class values('3A','2015-10-11 12:50:01',304,10);
-insert into class values('3B','2016-10-16 01:05:05',305,10);
-
-insert into enrolled values(1,'4B');
-insert into enrolled values(2,'4B');
-insert into enrolled values(3,'4C');
-insert into enrolled values(4,'4B');
-insert into enrolled values(5,'4A');
-insert into enrolled values(6,'4B');
-insert into enrolled values(7,'3B');
-insert into enrolled values(8,'3B');
-insert into enrolled values(9,'3B');
-insert into enrolled values(10,'3A');
-
-   select distinct sname 
-   from student s,class c,enrolled e,faculty f
-   where s.snum = e.snum and e.cname = c.cname and c.fid = f.fid and f.fname = 'prof. Murthy' and s.lvl = 'jr';
-   select c.cname  
-   from class c
-   where c.room = 301
-   or c.cname in (select e.cname from enrolled e group by e.cname having count(*) >= 5);
-   select distinct sname
-   from student s
-   where s.snum in (select e1.snum
-   from enrolled e1,enrolled e2,class c1,class c2
-   where e1.snum=e2.snum and e1.cname=c1.cname and e2.cname=c2.cname and c1.meets_at='11:15:02');
-   select distinct f.fname
-   from faculty f
-   where not exists((select c.room from class c)
-   minus
-   (select c1.room from class c1 where c1.fid=f.fid));
-   select distinct fname 
-   from faculty f where 5>(select count(e.snum)
-   from class c,enrolled e where c.cname=e.cname and c.fid=f.fid);
-   select distinct sname 
-   from student s
-   where s.snum not in(select e.snum from enrolled e);
-   select s.age,s.lvl 
-   from student s
-   group by s.age,s.lvl
-   having s.lvl in(select s1.lvl from student s1 where s1.age=s.age
-                   group by s1.lvl,s1.age
-                   having count(*)>=all(select count(*)
-                   from student s2 where s1.age=s2.age group by s2.lvl,s2.age));
+insert into student values(1,'A','CS','Jr',20),(2,'B','IS','Jr',20),(3,'C','CS','Sr',25),(4,'D','IS','Sr',22),(5,'E','CV','Jr',21),(6,'F','CV','Sr',22),(7,'G','Mec','Sr',19);
+insert into faculty values(10,'X',1000),(11,'Y',1000),(12,'Z',2000),(13,'W',2000),(14,'T',3000),(15,'P',4000);
+insert into class values('class1','12/11/15 10:15:16','R1',10),('class2','12/11/15 10:15:16','R2',10),('class3','12/11/15 11:15:16','R2',11),('class4','12/11/15 10:20:16','R3',11),('class5','12/11/15 11:20:16','R3',12),('class6','12/11/15 11:15:16','R1',12),('class7','12/11/15 10:15:16','R4',13),('class8','12/11/15 10:15:16','R5',14),('class9','12/11/15 10:25:16','R5',15);
+insert into enrolled values(1,'class1'),(2,'class1'),(3,'class3'),(4,'class3'),(5,'class4'),(5,'class5'),(6,'class6'),(6,'class7'),(5,'class8'),(4,'class9'),(5,'class1'),(5,'class2'),(6,'class1');
+select distinct sname from student,enrolled where student.snum=enrolled.snum and student.lvl='Jr';
+select distinct class.cname from class,enrolled where room='R1'or class.cname in(select cname from enrolled group by cname having count(snum)>1 );
+select distinct s1.sname,s2.sname from student s1,student s2,class c1,class c2,enrolled where enrolled.cname=c1.cname and enrolled.cname=c2.cname and s1.snum =enrolled.snum and s2.snum=enrolled.snum and s2.snum!=s1.snum  and c1.meet_at=c2.meet_at;
+select fname from faculty f,enrolled e group by deptid having count(deptid)>1;
+select distinct sname from student s,enrolled e where s.snum not in(select snum from enrolled);
